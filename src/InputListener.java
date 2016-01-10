@@ -10,12 +10,16 @@ public class InputListener extends KeyAdapter {
     Biker player1;
     Biker player2;
 
+    Draw draw;
+
     boolean ready = false;
 
-    public void ready(Biker player1, Biker player2) {
+    public void ready(Biker player1, Biker player2, Draw draw) {
         this.player1 = player1;
         this.player2 = player2;
+        this.draw = draw;
         ready = true;
+
     }
 
     @Override
@@ -49,6 +53,15 @@ public class InputListener extends KeyAdapter {
                 case KeyEvent.VK_RIGHT:
                     if(twoD != Biker.Direction.WEST) player2.setDirection(Biker.Direction.EAST);
                     break;
+                case KeyEvent.VK_SPACE:
+                    draw.reset();
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    if(draw.timer.isRunning()) {
+                        draw.timer.stop();
+                    } else {
+                        draw.timer.start();
+                    }
             }
         }
     }

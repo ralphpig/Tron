@@ -4,7 +4,7 @@ import java.awt.event.KeyListener;
 /**
  * Created by ralphpig on 1/9/16.
  */
-public class Biker{
+public class Biker {
 
     public enum Direction {
         NORTH,
@@ -14,7 +14,7 @@ public class Biker{
     }
 
     private int x = 0;
-    private int y = 400;
+    private int y = 0;
 
     private int player;
 
@@ -22,6 +22,10 @@ public class Biker{
 
     public Biker(int player) {
         this.player = player;
+        reset();
+    }
+
+    public void reset() {
         if(player == 1) direction = Direction.EAST;
         if(player == 2) direction = Direction.WEST;
     }

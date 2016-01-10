@@ -11,45 +11,37 @@ import java.util.ArrayList;
  * Created by Bryson on 1/9/2016.
  */
 public class Draw extends JPanel implements ActionListener{
-    public static int DELTA = 10;
+    public static int DELTA = 5;
 
 
-    /*
+    Timer t = new Timer(100, this);
+
     Biker Bryson = new Biker(1);
     Biker Michael = new Biker(2);
-    */
+
     boolean firstTime = true;
-    Timer t = new Timer(1,this);
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        if (firstTime == true){
-            /*
+        if (firstTime){
+            Michael.setX(getWidth()*9/10);
+            Michael.setY(getWidth()* 1/2);
 
-            Michael.setX(getWidth()*9/10)
-            Bryson.setX(getWidth()*1/10)
-            Michael.setY(getWidth()* 1/2)
-            Bryson.setX(getWidth()*1/2)
-            Michael.set
-             */
+            Bryson.setX(getWidth()*1/10 - 10);
+            Bryson.setY(getWidth()*1/2);
+            t.start();
             firstTime = false;
         }
+        g2d.setColor(Color.BLUE);
+        g2d.fill(new Rectangle2D.Double(Bryson.getX(), Bryson.getY(), 10,10));
 
-        /*
-
-
-        Bryson.setShape(new Rectangle2D.Double(Bryson.getX(), Bryson.getY(), 1,1))
-        Michael.setShape(new Rectangle2D.Double(Michael.getX(), Michael.getY(), 1,1))
-
-
-        */
-
+        g2d.setColor(Color.RED);
+        g2d.fill(new Rectangle2D.Double(Michael.getX(), Michael.getY(), 10,10));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*
         switch(Bryson.getDirection()){
             case NORTH:
                 Bryson.setY(Bryson.getY() - DELTA);
@@ -78,8 +70,6 @@ public class Draw extends JPanel implements ActionListener{
                 Michael.setY(Michael.getY() - DELTA);
                 break;
         }
-
-         */
+        repaint();
     }
-
 }

@@ -18,10 +18,13 @@ public class Biker {
 
     private int player;
 
+    public String name;
+
     private Direction direction;
 
-    public Biker(int player) {
+    public Biker(int player, String name) {
         this.player = player;
+        this.name = name;
         reset();
     }
 

@@ -57,11 +57,7 @@ public class InputListener extends KeyAdapter {
                     draw.reset();
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    if(draw.timer.isRunning()) {
-                        draw.timer.stop();
-                    } else {
-                        draw.timer.start();
-                    }
+                    draw.pause();
             }
         }
     }

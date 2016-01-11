@@ -16,19 +16,24 @@ public class Draw extends JPanel implements ActionListener{
     public static int SIZE = 1;
     public static int DELAY = 5;
 
-    Timer timer = new Timer(DELAY, this);
+    private Timer timer = new Timer(DELAY, this);
 
-    Biker player1 = new Biker(1);
-    Biker player2 = new Biker(2);
+    Biker player1 = new Biker(1, "Michael");
+    Biker player2 = new Biker(2, "Bryson");
+    Biker loser;
 
     boolean firstTime = true;
+    boolean gameOver = false;
 
     private InputListener inputListener;
 
     public Draw(InputListener inputListener) {
         this.inputListener = inputListener;
-
     }
+
+    List<Point> points = new ArrayList<Point>();        // Every point
+    List<Point> onePoints = new ArrayList<Point>();     // Player1 points
+    List<Point> twoPoints = new ArrayList<Point>();     // Player2 points
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -47,12 +52,22 @@ public class Draw extends JPanel implements ActionListener{
             g2d.fill(new Rectangle2D.Double(p.getX(), p.getY(), SIZE, SIZE));
         }
 
+        if(gameOver) {
+            //TODO Bryson run explode code using the 'loser Biker'
+            if(loser == null) {
+                //TODO Explode both players
+            } else {
+                System.out.println("Explode " + loser.name);
+            }
+            timer.stop(); //TODO Remove stop()
+        }
     }
 
     public void reset() {
         timer.stop();
 
         firstTime = true;
+        gameOver = false;
 
         player1.setX(getWidth()*1/10 - SIZE + 1);
         player1.setY(getHeight()*1/2);
@@ -66,74 +81,92 @@ public class Draw extends JPanel implements ActionListener{
 
         player1.reset();
         player2.reset();
+        loser = null;
 
         timer.start();
 
         inputListener.ready(player1, player2, this);
     }
 
+    public void endGame() {
+        timer.stop();
 
-    List<Point> points = new ArrayList<Point>();
-    List<Point> onePoints = new ArrayList<Point>();
-    List<Point> twoPoints = new ArrayList<Point>();
+        gameOver = true;
+    }
+
+    public void endGame(Biker loser) {
+        this.loser = loser;
+        gameOver = true;
+    }
+
+    public void pause() {
+        if(!gameOver) {
+            if(timer.isRunning()) {
+                timer.stop();
+            } else {
+                timer.start();
+            }
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch(player1.getDirection()){
-            case NORTH:
-                player1.setY(player1.getY() - DELTA);
-                break;
-            case EAST:
-                player1.setX(player1.getX() + DELTA);
-                break;
-            case SOUTH:
-                player1.setY(player1.getY() + DELTA);
-                break;
-            case WEST:
-                player1.setX(player1.getX() - DELTA);
-                break;
+        if(!gameOver) {
+            switch(player1.getDirection()){
+                case NORTH:
+                    player1.setY(player1.getY() - DELTA);
+                    break;
+                case EAST:
+                    player1.setX(player1.getX() + DELTA);
+                    break;
+                case SOUTH:
+                    player1.setY(player1.getY() + DELTA);
+                    break;
+                case WEST:
+                    player1.setX(player1.getX() - DELTA);
+                    break;
+            }
+            switch(player2.getDirection()){
+                case NORTH:
+                    player2.setY(player2.getY() - DELTA);
+                    break;
+                case EAST:
+                    player2.setX(player2.getX() + DELTA);
+                    break;
+                case SOUTH:
+                    player2.setY(player2.getY() + DELTA);
+                    break;
+                case WEST:
+                    player2.setX(player2.getX() - DELTA);
+                    break;
+            }
+
+            Point oneP = new Point(player1.getX(), player1.getY());
+            Point twoP = new Point(player2.getX(), player2.getY());
+
+            if(points.contains(oneP) && points.contains(twoP)) {
+                System.out.println("NO WIN");
+                endGame();
+            } else if(points.contains(oneP)) {
+                System.out.println("TWO WINS");
+                endGame(player1);
+            } else if(points.contains(twoP)) {
+                System.out.println("ONE WINS");
+                endGame(player2);
+            } else if(oneP.x == 0 || oneP.x == getWidth() || oneP.y == 0 || oneP.y == getHeight()) {
+                System.out.println("TWO WINS");
+                endGame(player1);
+            } else if(twoP.x == 0 || twoP.x == getWidth() || twoP.y == 0 || twoP.y == getHeight()) {
+                System.out.println("ONE WINS");
+                endGame(player2);
+            } else {
+                points.add(oneP);
+                points.add(twoP);
+
+                onePoints.add(oneP);
+                twoPoints.add(twoP);
+            }
         }
-       switch(player2.getDirection()){
-            case NORTH:
-                player2.setY(player2.getY() - DELTA);
-                break;
-            case EAST:
-                player2.setX(player2.getX() + DELTA);
-                break;
-            case SOUTH:
-                player2.setY(player2.getY() + DELTA);
-                break;
-            case WEST:
-                player2.setX(player2.getX() - DELTA);
-                break;
-        }
-
-        Point oneP = new Point(player1.getX(), player1.getY());
-        Point twoP = new Point(player2.getX(), player2.getY());
-
-        if(points.contains(oneP) && points.contains(twoP)) {
-            System.out.println("NO WIN");
-            timer.stop();
-        } else if(points.contains(oneP)) {
-            System.out.println("TWO WINS");
-            timer.stop();
-        } else if(points.contains(twoP)) {
-            System.out.println("One WINS");
-            timer.stop();
-        } else if(oneP.x == 0 || oneP.x == getWidth() || oneP.y == 0 || oneP.y == getHeight()) {
-            System.out.println("TWO WINS");
-            timer.stop();
-        } else if(twoP.x == 0 || twoP.x == getWidth() || twoP.y == 0 || twoP.y == getHeight()) {
-            System.out.println("ONE WINS");
-            timer.stop();
-        } else {
-            points.add(oneP);
-            points.add(twoP);
-
-            onePoints.add(oneP);
-            twoPoints.add(twoP);
-        }
-
         repaint();
     }
 }

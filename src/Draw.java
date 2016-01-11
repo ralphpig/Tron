@@ -12,9 +12,9 @@ import java.util.List;
  * Created by Bryson on 1/9/2016.
  */
 public class Draw extends JPanel implements ActionListener{
-    public static int DELTA = 4;
+    public static int DELTA = 1;
     public static int SIZE = 1;
-    public static int DELAY = 10;
+    public static int DELAY = 5;
 
     Timer timer = new Timer(DELAY, this);
 
@@ -34,16 +34,18 @@ public class Draw extends JPanel implements ActionListener{
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         if (firstTime){
-
             reset();
-
             firstTime = false;
         }
         g2d.setColor(Color.GREEN);
-        g2d.fill(new Rectangle2D.Double(player1.getX(), player1.getY(), SIZE + 1, SIZE));
+        for(Point p : onePoints) {
+            g2d.fill(new Rectangle2D.Double(p.getX(), p.getY(), SIZE, SIZE));
+        }
 
         g2d.setColor(Color.RED);
-        g2d.fill(new Rectangle2D.Double(player2.getX(), player2.getY(), SIZE + 1, SIZE));
+        for(Point p : twoPoints) {
+            g2d.fill(new Rectangle2D.Double(p.getX(), p.getY(), SIZE, SIZE));
+        }
 
     }
 
@@ -59,6 +61,8 @@ public class Draw extends JPanel implements ActionListener{
         player2.setY(getHeight()* 1/2);
 
         points.clear();
+        onePoints.clear();
+        twoPoints.clear();
 
         player1.reset();
         player2.reset();
@@ -70,6 +74,8 @@ public class Draw extends JPanel implements ActionListener{
 
 
     List<Point> points = new ArrayList<Point>();
+    List<Point> onePoints = new ArrayList<Point>();
+    List<Point> twoPoints = new ArrayList<Point>();
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -123,6 +129,9 @@ public class Draw extends JPanel implements ActionListener{
         } else {
             points.add(oneP);
             points.add(twoP);
+
+            onePoints.add(oneP);
+            twoPoints.add(twoP);
         }
 
         repaint();
